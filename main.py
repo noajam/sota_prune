@@ -1,6 +1,7 @@
 import os
 from tqdm import tqdm
 
+import torch.nn as nn
 
 from shrinkbench.experiment import PruningExperiment
 import shrinkbench.models as models
@@ -14,13 +15,15 @@ clear_output()
 
 os.environ['DATAPATH'] = 'data'
 
-for strategy in ['GlobalMagWeight', 'LayerMagWeight']:
-    for c in [1,2,4,8,16,32,64]:
+for strategy in ['LayerLAP', 'GlobalLAP', 'LayerMagNoBias', 'GlobalMagNoBias', 'OptimalBrainDamage']:
+    for c in [2,4,6,8,10,12,14]:
         exp = PruningExperiment(dataset='CIFAR10', 
-                                model='resnet56',
+                                model='MnistNet',
                                 strategy=strategy,
                                 compression=c,
-                                train_kwargs={'epochs':10})
+                                train_kwargs={'epochs':5},
+                                pretrained=False)
+
         exp.run()
         clear_output()
         
